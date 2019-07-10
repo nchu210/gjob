@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import com.gjob.base.redis.JedisFactory;
 import com.gjob.base.redis.RedisProperties;
+
+import redis.clients.jedis.Jedis;
 @Component
 public class GjobStart implements ApplicationRunner {
 	@Autowired
@@ -23,12 +25,15 @@ public class GjobStart implements ApplicationRunner {
 /**
  * 初始化Redis工厂
  */
+	@SuppressWarnings("static-access")
 	private void intiRedis() {
-		// TODO Auto-generated method stub
-
-		JedisFactory jedisFactory=JedisFactory.getInstance();
-		System.out.println(redisProperties.getPassword());
-		//jedisFactory.setMaxTotal(maxTotal);
+		JedisFactory.getInstance().init(redisProperties);
+		Jedis jedis=JedisFactory.getInstance().getJedis();
+		 //查看服务是否运行
+        System.out.println("服务正在运行: "+jedis.ping());
+        System.out.println("服务正在运行: "+JedisFactory.getInstance().jedisPool.getNumActive());
+        System.out.println("服务正在运行: "+JedisFactory.getInstance().jedisPool.getNumIdle());
+        
 	}
 
 }
